@@ -1,7 +1,10 @@
+extern crate rand;
 use std::net::{TcpListener, TcpStream};
 use std::thread;
-
 use std::io::{Read, Write, Error};
+
+use rand::{thread_rng, Rng};
+use std::time::Duration;
 
 pub fn run() {
     println!("server start.");
@@ -28,6 +31,11 @@ fn handle_client(mut stream: TcpStream) -> Result<(), Error> {
         if bytes_read == 0 {
             return Ok(());
         }
+
+        let sleep = Duration::from_secs(*thread_rng().choose(&[0,1,2,3,4,5]).unwrap());
+        println!("Sleeping for {:?} before replying", sleep);
+        std::thread::sleep(sleep);
+
         stream.write(&buf[..bytes_read])?;
     }
 }
